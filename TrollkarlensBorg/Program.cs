@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace TrollkarlensBorg
 {
@@ -6,7 +7,14 @@ namespace TrollkarlensBorg
     {
         static void Main(string[] args)
         {
-            
+            Console.WriteLine("Skriv siffra för att välja hjälte:\n" +
+                "0: Eldhjälte\n" +
+                "1: Ishjälte");
+
+            if (Input.TryClean(Console.ReadLine(), out string input))
+            {
+                Input.IsValid(input, new[] { "0", "1" });
+            }
         }
     }
 
@@ -37,17 +45,41 @@ namespace TrollkarlensBorg
         //}
     }
 
+    static class Input
+    {
+        public static bool TryClean(string input, out string clean)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                clean = string.Empty;
+                return false;
+            }
+
+            clean = input.Trim();
+            return true;
+        }
+
+        public static bool IsValid(string input, string[] validInputs)
+        {
+            return validInputs.Contains<string>(input);
+        }
+    }
+
     class Player : IHealth // Make abstract preferably
     {
         private string _name;
-        private int _hp;
+        private int _hp = 10; // Not set in stone
         private int _position;
 
-        public Player(string name, int hp)
+        public Player(string name)
         {
             _name = name;
-            _hp = hp;
             _position = 0; // May be changed
+        }
+
+        public static Player ChooseHero()
+        {
+
         }
 
         public void Move()
@@ -64,6 +96,16 @@ namespace TrollkarlensBorg
         {
 
         }
+    }
+
+    class FireHero : Player
+    {
+        public FireHero(string name) : base(name) { }
+    }
+
+    class IceHero : Player
+    {
+        public IceHero(string name) : base(name) { }
     }
 
     abstract class Board // Could be static or abstract?
@@ -93,7 +135,7 @@ namespace TrollkarlensBorg
     {
         public override void Enter()
         {
-            
+
         }
     }
 
@@ -101,7 +143,7 @@ namespace TrollkarlensBorg
     {
         public override void Enter()
         {
-            
+
         }
     }
 
@@ -109,7 +151,7 @@ namespace TrollkarlensBorg
     {
         public override void Enter()
         {
-            
+
         }
     }
 
@@ -130,7 +172,7 @@ namespace TrollkarlensBorg
     {
         public override void Attack()
         {
-            
+
         }
     }
 }
