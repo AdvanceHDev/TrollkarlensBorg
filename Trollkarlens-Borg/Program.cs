@@ -4,23 +4,27 @@
     {
         static void Main(string[] args)
         {
-            string input;
+            string choice;
             while (true)
             {
                 Console.WriteLine("Skriv siffra för att välja hjälte:\n" +
                     "0: Eldhjälte\n" +
                     "1: Ishjälte");
-                if (Input.TryClean(Console.ReadLine(), out input))
+
+
+
+                if (Input.TryClean(Console.ReadLine(), out string input))
                 {
                     if (Input.IsValid(input, new[] { "0", "1" }))
                     {
+                        choice = input;
                         break;
                     }
                 }
             }
 
             Console.WriteLine("\nSkriv ett namn för din karaktär:");
-            Player player = Player.ChooseHero(input, Console.ReadLine());
+            Player player = Player.ChooseHero(choice, Console.ReadLine());
         }
     }
 
@@ -30,26 +34,26 @@
         void Attack();
     }
 
-    static class Game // Make non-static?
-    {
-        private static Player _player;
-        private static Board _board;
+    //static class Game // Make non-static?
+    //{
+    //    private static Player _player;
+    //    private static Board _board;
 
-        public static void Start()
-        {
-            Board.ShowMap();
-        }
+    //    public static void Start()
+    //    {
+    //        Board.ShowMap();
+    //    }
 
-        //public static void Run()
-        //{
+    //    //public static void Run()
+    //    //{
 
-        //}
+    //    //}
 
-        //public static void CheckWin()
-        //{
+    //    //public static void CheckWin()
+    //    //{
 
-        //}
-    }
+    //    //}
+    //}
 
     static class Input
     {
@@ -85,8 +89,10 @@
 
         public string Name { get; set; }
 
-        public static Player ChooseHero(string choice, string name)
+        public static Player ChooseHero(string choice, string? input)
         {
+            // Add logic for validating input as well as a default name
+
             return choice switch
             {
                 "0" => new FireHero(name),
@@ -120,71 +126,71 @@
         public IceHero(string name) : base(name) { }
     }
 
-    abstract class Board // Could be static or abstract?
-    {
-        private Room[] _rooms;
+    //abstract class Board // Could be static or abstract?
+    //{
+    //    private Room[] _rooms;
 
-        public static void ShowMap()
-        {
+    //    public static void ShowMap()
+    //    {
 
-        }
+    //    }
 
-        //public static void GetRoom()
-        //{
+    //    //public static void GetRoom()
+    //    //{
 
-        //}
-    }
+    //    //}
+    //}
 
-    abstract class Room
-    {
-        private string _description;
+    //abstract class Room
+    //{
+    //    private string _description;
 
-        // Kanske inte behöver implementeras olika för varje rum
-        public virtual void Enter() { } // Mark as abstract?
-    }
+    //    // Kanske inte behöver implementeras olika för varje rum
+    //    public virtual void Enter() { } // Mark as abstract?
+    //}
 
-    class TrapRoom : Room
-    {
-        public override void Enter()
-        {
+    //class TrapRoom : Room
+    //{
+    //    public override void Enter()
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
-    class EnemyRoom : Room
-    {
-        public override void Enter()
-        {
+    //class EnemyRoom : Room
+    //{
+    //    public override void Enter()
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
-    class TreasureRoom : Room
-    {
-        public override void Enter()
-        {
+    //class TreasureRoom : Room
+    //{
+    //    public override void Enter()
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
-    abstract class Enemy : IHealth
-    {
-        private string _name;
-        private int _hp;
+    //abstract class Enemy : IHealth
+    //{
+    //    private string _name;
+    //    private int _hp;
 
-        public void TakeDamage() // Make abstract?
-        {
+    //    public void TakeDamage() // Make abstract?
+    //    {
 
-        }
+    //    }
 
-        public abstract void Attack();
-    }
+    //    public abstract void Attack();
+    //}
 
-    class BossEnemy : Enemy
-    {
-        public override void Attack()
-        {
+    //class BossEnemy : Enemy
+    //{
+    //    public override void Attack()
+    //    {
 
-        }
-    }
+    //    }
+    //}
 }
