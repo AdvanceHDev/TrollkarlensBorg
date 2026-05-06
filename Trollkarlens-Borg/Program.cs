@@ -1,20 +1,26 @@
-﻿using System;
-using System.Linq;
-
-namespace TrollkarlensBorg
+﻿namespace Trollkarlens_Borg
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Skriv siffra för att välja hjälte:\n" +
-                "0: Eldhjälte\n" +
-                "1: Ishjälte");
-
-            if (Input.TryClean(Console.ReadLine(), out string input))
+            string input;
+            while (true)
             {
-                Input.IsValid(input, new[] { "0", "1" });
+                Console.WriteLine("Skriv siffra för att välja hjälte:\n" +
+                    "0: Eldhjälte\n" +
+                    "1: Ishjälte");
+                if (Input.TryClean(Console.ReadLine(), out input))
+                {
+                    if (Input.IsValid(input, new[] { "0", "1" }))
+                    {
+                        break;
+                    }
+                }
             }
+
+            Console.WriteLine("\nSkriv ett namn för din karaktär:");
+            Player player = Player.ChooseHero(input, Console.ReadLine());
         }
     }
 
@@ -47,7 +53,7 @@ namespace TrollkarlensBorg
 
     static class Input
     {
-        public static bool TryClean(string input, out string clean)
+        public static bool TryClean(string? input, out string clean)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -69,17 +75,23 @@ namespace TrollkarlensBorg
     {
         private string _name;
         private int _hp = 10; // Not set in stone
-        private int _position;
+        private int[] _position;
 
         public Player(string name)
         {
             _name = name;
-            _position = 0; // May be changed
+            _position = [0, 0]; // May be changed
         }
 
-        public static Player ChooseHero()
-        {
+        public string Name { get; set; }
 
+        public static Player ChooseHero(string choice, string name)
+        {
+            return choice switch
+            {
+                "0" => new FireHero(name),
+                "1" => new IceHero(name)
+            };
         }
 
         public void Move()
