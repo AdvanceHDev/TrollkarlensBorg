@@ -23,7 +23,7 @@
                 }
             }
             while (player == null);
-            
+
             while (true)
             {
                 Console.Write("Välj ett namn för din karaktär: ");
@@ -38,9 +38,11 @@
 
             player.PresentPlayer();
 
-            player.FindPossiblePaths();
-            // Game starts here?
-            Game.ChooseRoomType();
+            player.FindPossibleDirections();
+
+
+
+            Room room = Room.ChooseRandom();
         }
     }
 
@@ -52,7 +54,17 @@
 
     static class Game
     {
-        public static Room ChooseRoomType()
+
+    }
+
+    abstract class Board
+    {
+        public const int Size = 7;
+    }
+
+    abstract class Room
+    {
+        public static Room ChooseRandom()
         {
             Random random = new Random();
 
@@ -62,16 +74,6 @@
                 1 => new EnemyRoom()
             };
         }
-    }
-
-    static class Board
-    {
-        public const int boardSize = 7;
-    }
-
-    abstract class Room
-    {
-        
     }
 
     class TrapRoom : Room
@@ -95,7 +97,7 @@
         {
             Name = string.Empty;
             _position = (1, 1);
-            _possibleDirections = new Dictionary<string, int>();
+            _possibleDirections = new Dictionary<string, int>(); // Använd en array istället?
         }
 
         public static Player? ChooseHero(int choice)
@@ -108,13 +110,11 @@
             };
         }
 
-        public void FindPossiblePaths()
+        public void FindPossibleDirections()
         {
             _possibleDirections.Clear();
 
-
-            // Ändra 7 om spelplanen inte är 7x7
-            if (_position.Item2 < Board.boardSize)
+            if (_position.Item2 < Board.Size)
             {
                 _possibleDirections.Add("Upp", _possibleDirections.Count + 1);
             }
@@ -123,7 +123,7 @@
                 _possibleDirections.Add("Ned", _possibleDirections.Count + 1);
             }
 
-            if (_position.Item1 < Board.boardSize)
+            if (_position.Item1 < Board.Size)
             {
                 _possibleDirections.Add("Höger", _possibleDirections.Count + 1);
             }
@@ -135,7 +135,7 @@
             Console.WriteLine($"\n{Name} kan gå:");
             foreach (string direction in _possibleDirections.Keys)
             {
-                int num = _possibleDirections.GetValueOrDefault(direction);
+                int num = _possibleDirections[direction];
                 Console.WriteLine($"{num}. {direction}");
             }
         }
@@ -157,12 +157,12 @@
 
         public override void Attack()
         {
-            
+
         }
 
         public override void TakeDamage()
         {
-            
+
         }
     }
 
@@ -177,12 +177,12 @@
 
         public override void Attack()
         {
-            
+
         }
 
         public override void TakeDamage()
         {
-            
+
         }
     }
 }
