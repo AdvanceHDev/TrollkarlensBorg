@@ -38,6 +38,7 @@
 
             player.PresentPlayer();
 
+            player.FindPossiblePaths();
             // Game starts here?
             Game.ChooseRoomType();
         }
@@ -65,7 +66,7 @@
 
     static class Board
     {
-        
+        public const int boardSize = 7;
     }
 
     abstract class Room
@@ -88,13 +89,13 @@
         public string Name { get; set; }
 
         private (int, int) _position;
-        private Dictionary<string, int> possiblePaths;
+        private Dictionary<string, int> _possibleDirections;
 
         public Player()
         {
             Name = string.Empty;
-            _position = (0, 0);
-            possiblePaths = new Dictionary<string, int>();
+            _position = (1, 1);
+            _possibleDirections = new Dictionary<string, int>();
         }
 
         public static Player? ChooseHero(int choice)
@@ -107,28 +108,35 @@
             };
         }
 
-        public void PrintPossiblePaths()
+        public void FindPossiblePaths()
         {
-            Console.WriteLine($"{Name} kan gå:");
+            _possibleDirections.Clear();
+
 
             // Ändra 7 om spelplanen inte är 7x7
-            if (_position.Item1 < 7)
+            if (_position.Item2 < Board.boardSize)
             {
-                Console.WriteLine("Upp");
-                possiblePaths.Add("Upp", possiblePaths.Count + 1); // Fortsätt härifrån
+                _possibleDirections.Add("Upp", _possibleDirections.Count + 1);
             }
-            if (_position.Item1 > 0)
+            if (_position.Item2 > 1)
             {
-                Console.WriteLine("Ned");
+                _possibleDirections.Add("Ned", _possibleDirections.Count + 1);
             }
 
-            if (_position.Item2 < 7)
+            if (_position.Item1 < Board.boardSize)
             {
-                Console.WriteLine("Höger");
+                _possibleDirections.Add("Höger", _possibleDirections.Count + 1);
             }
-            if (_position.Item2 > 0)
+            if (_position.Item1 > 1)
             {
-                Console.WriteLine("Vänster");
+                _possibleDirections.Add("Vänster", _possibleDirections.Count + 1);
+            }
+
+            Console.WriteLine($"\n{Name} kan gå:");
+            foreach (string direction in _possibleDirections.Keys)
+            {
+                int num = _possibleDirections.GetValueOrDefault(direction);
+                Console.WriteLine($"{num}. {direction}");
             }
         }
 
