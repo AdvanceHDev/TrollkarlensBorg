@@ -38,17 +38,39 @@
 
             player.PresentPlayer();
 
+            // Loop starts here?
             player.FindPossibleDirections();
 
+            while (true)
+            {
+                Console.WriteLine("\nVart vill du gå?");
+                string? input = Console.ReadLine();
 
+                if (!int.TryParse(input, out int choice)) continue;
+
+                if (player.PossibleDirections.ContainsKey(choice))
+                {
+                    player.Move(choice);
+                    break;
+                }
+            }
 
             Room room = Room.ChooseRandom();
+            room.Enter();
         }
     }
 
     interface IAttack
     {
         void Attack();
+        void Dodge();
+    }
+
+    interface IHealth
+    {
+        int Health { get; set; }
+
+        void Heal();
         void TakeDamage();
     }
 
@@ -64,6 +86,13 @@
 
     abstract class Room
     {
+        private string _description;
+
+        public Room(string description)
+        {
+
+        }
+
         public static Room ChooseRandom()
         {
             Random random = new Random();
@@ -73,6 +102,11 @@
                 0 => new TrapRoom(),
                 1 => new EnemyRoom()
             };
+        }
+
+        public void Enter()
+        {
+
         }
     }
 
@@ -86,18 +120,23 @@
 
     }
 
-    abstract class Player : IAttack
+    abstract class Player : IAttack, IHealth
     {
         public string Name { get; set; }
 
+        public Dictionary<int, string> PossibleDirections
+        {
+            get { return _possibleDirections; }
+        }
+
         private (int, int) _position;
-        private Dictionary<string, int> _possibleDirections;
+        private Dictionary<int, string> _possibleDirections;
 
         public Player()
         {
             Name = string.Empty;
             _position = (1, 1);
-            _possibleDirections = new Dictionary<string, int>(); // Använd en array istället?
+            _possibleDirections = new Dictionary<int, string>();
         }
 
         public static Player? ChooseHero(int choice)
@@ -116,39 +155,46 @@
 
             if (_position.Item2 < Board.Size)
             {
-                _possibleDirections.Add("Upp", _possibleDirections.Count + 1);
+                _possibleDirections.Add(_possibleDirections.Count + 1, "Upp");
             }
             if (_position.Item2 > 1)
             {
-                _possibleDirections.Add("Ned", _possibleDirections.Count + 1);
+                _possibleDirections.Add(_possibleDirections.Count + 1, "Ned");
             }
 
             if (_position.Item1 < Board.Size)
             {
-                _possibleDirections.Add("Höger", _possibleDirections.Count + 1);
+                _possibleDirections.Add(_possibleDirections.Count + 1, "Höger");
             }
             if (_position.Item1 > 1)
             {
-                _possibleDirections.Add("Vänster", _possibleDirections.Count + 1);
+                _possibleDirections.Add(_possibleDirections.Count + 1, "Vänster");
             }
 
             Console.WriteLine($"\n{Name} kan gå:");
-            foreach (string direction in _possibleDirections.Keys)
+            foreach (int num in _possibleDirections.Keys)
             {
-                int num = _possibleDirections[direction];
+                string direction = _possibleDirections[num];
                 Console.WriteLine($"{num}. {direction}");
             }
+        }
+
+        public void Move(int direction)
+        {
+
         }
 
         public abstract void PresentPlayer();
 
         public abstract void Attack();
+        public abstract void Dodge();
+
         public abstract void TakeDamage();
     }
 
     class FireHero : Player
     {
-        private int health = 20;
+        private int _health = 20;
 
         public override void PresentPlayer()
         {
@@ -168,7 +214,7 @@
 
     class IceHero : Player
     {
-        private int health = 20;
+        private int _health = 20;
 
         public override void PresentPlayer()
         {
@@ -184,5 +230,10 @@
         {
 
         }
+    }
+
+    class Enemy
+    {
+
     }
 }
