@@ -63,7 +63,6 @@
     interface IAttack
     {
         void Attack();
-        void Dodge();
     }
 
     interface IHealth
@@ -86,12 +85,12 @@
 
     abstract class Room
     {
-        private string _description;
+        //private string _description;
 
-        public Room(string description)
-        {
+        //public Room(string description)
+        //{
 
-        }
+        //}
 
         public static Room ChooseRandom()
         {
@@ -104,25 +103,39 @@
             };
         }
 
-        public void Enter()
-        {
+        public abstract void Enter();
+    }
 
+    class EmptyRoom : Room
+    {
+        public override void Enter()
+        {
+            
         }
     }
 
     class TrapRoom : Room
     {
+        private Enemy _enemy;
 
+        public override void Enter()
+        {
+
+        }
     }
 
     class EnemyRoom : Room
     {
+        public override void Enter()
+        {
 
+        }
     }
 
     abstract class Player : IAttack, IHealth
     {
         public string Name { get; set; }
+        public int Health { get; set; }
 
         public Dictionary<int, string> PossibleDirections
         {
@@ -132,9 +145,11 @@
         private (int, int) _position;
         private Dictionary<int, string> _possibleDirections;
 
-        public Player()
+        public Player(int health)
         {
             Name = string.Empty;
+            Health = health;
+
             _position = (1, 1);
             _possibleDirections = new Dictionary<int, string>();
         }
@@ -181,20 +196,44 @@
 
         public void Move(int direction)
         {
+            string d = _possibleDirections[direction];
 
+            switch (d)
+            {
+                case "Upp": _position.Item2++;
+                    break;
+                case "Ned": _position.Item2--;
+                    break;
+                case "Höger": _position.Item1++;
+                    break;
+                case "Vänster": _position.Item1--;
+                    break;
+            }
         }
 
         public abstract void PresentPlayer();
 
         public abstract void Attack();
-        public abstract void Dodge();
 
-        public abstract void TakeDamage();
+        public void Dodge()
+        {
+
+        }
+
+        public void Heal() // Make abstract?
+        {
+
+        }
+
+        public void TakeDamage() // Make abstract?
+        {
+
+        }
     }
 
     class FireHero : Player
     {
-        private int _health = 20;
+        public FireHero() : base(20) { }
 
         public override void PresentPlayer()
         {
@@ -205,16 +244,11 @@
         {
 
         }
-
-        public override void TakeDamage()
-        {
-
-        }
     }
 
     class IceHero : Player
     {
-        private int _health = 20;
+        public IceHero() : base(25) { }
 
         public override void PresentPlayer()
         {
@@ -225,14 +259,29 @@
         {
 
         }
+    }
 
-        public override void TakeDamage()
+    class Enemy : IAttack, IHealth
+    {
+        public int Health { get; set; }
+
+        public virtual void Attack()
+        {
+
+        }
+
+        public void Heal() // Make virtual?
+        {
+
+        }
+
+        public void TakeDamage() // Make virtual?
         {
 
         }
     }
 
-    class Enemy
+    class Wizard : Enemy
     {
 
     }
